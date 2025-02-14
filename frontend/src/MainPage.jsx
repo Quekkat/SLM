@@ -68,7 +68,7 @@ const MainPage = () => {
           </div>
           <div className="statusContainer">
             <LicenseStatus listenLicense={licenseList}/>
-            <AddLicense retrieveLicense={retrieveLicense}/>
+            <AddLicense/>
           </div>
       </div>
       <div className = "license-list-body">

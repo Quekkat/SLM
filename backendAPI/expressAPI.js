@@ -18,13 +18,8 @@ const LicenseListModel = new mongoose.model("licenseListModel", licenseListSchem
 
 /*--------------------------------HANDLES REQUEST---------------------------------------------------------------------- */
 // Handles base request, delete once done
-app.use(express.static('dist'));
-app.get('/API/', async (req, res) =>{
-  LoginModel.findOne().then( user => {
-    res.json(user);
-  })
-  //TODO:Delete after test 
-});
+
+//app.use(express.static('dist'));
 
 //handles login request
 app.post('/API/login',async (req, res) =>{
@@ -71,15 +66,24 @@ app.delete('/API/license/delete/:id', async (req, res)=>{
 
 //allows to add new license
 app.post('/API/create/license', async (req, res)=>{
-  const {gmail, licenseType, creationDate, formattedExpirationDate} = req.body;
-  await LicenseListModel.create({userGmail: gmail, dateCreated: creationDate, dateExpired: formattedExpirationDate, licenseType: licenseType}).then((data)=>{
-    res.status(200).json("created");
-  }).catch(error => {
-    res.status(400).json({
-      success: false,
-      message: error.message,
+  const {addLicenseOwnerGmail, licenseType, creationDate, formattedExpirationDate, licenseCreateAmmount} = req.body;
+  if(licenseCreateAmmount <= 1){
+    await LicenseListModel.create({userGmail: addLicenseOwnerGmail, dateCreated: creationDate, dateExpired: formattedExpirationDate, licenseType: licenseType}).then((data)=>{
+      res.status(200).json("created");
+    }).catch(error => {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
     });
-  });
+  } else {
+    const multipleLicense =Array(licenseCreateAmmount).fill({userGmail: addLicenseOwnerGmail, dateCreated: creationDate, dateExpired: formattedExpirationDate, licenseType: licenseType});
+    await LicenseListModel.insertMany(multipleLicense).then((data)=>{res.status(200).json("created");}).catch(error =>{
+      res.status(400).json({success: false, message: error.message,});
+    });
+
+  }
+
 })
 //Allows to search license
 app.get('/API/license/searchWho/:username', async (req,res)=>{

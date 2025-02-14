@@ -6,11 +6,11 @@ const LicenseList = ({licenseList, handleDelete}) => {
     <div>
       {licenseList.map((license, index)=>{
         //Formats created date
-        const formattedExpirationDate = new Date(license.dateCreated).toLocaleDateString("en-GB",{
+        const formattedExpirationDate = new Date(license.dateExpired).toLocaleDateString("en-GB",{
           day: "2-digit", month: "long", year: "numeric"
         });
         //Formats expiration date
-        const formattedCreatedDate = new Date(license.dateExpired).toLocaleDateString("en-GB",{
+        const formattedCreatedDate = new Date(license.dateCreated).toLocaleDateString("en-GB",{
           day: "2-digit", month: "long", year: "numeric"
         });
         return(
