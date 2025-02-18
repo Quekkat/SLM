@@ -9,12 +9,26 @@ export const useGlobalStore = create((set,get)=>({
     activeLicense:0,
     expiredLicense:0,
     totalLicense:0,
-    filter:null,
-    findLicense:"",
+    filter:"", //What license to filter
+    findLicense:"", //the person
+    loginName:"",
+    loginPassword:"",
+    respondResult:"",
     
-    deleteLicense: async()=>{},
+    deleteLicense: async(id)=>{
+        const {refreshEvent} = get();
+        console.log('deleting-license-with-id:'+id);
+        await axios.delete('API/license/delete/'+id)
+        .then((response)=>{
+          refreshEvent();
+          console.log(response.data);
+        })
+        .catch((error)=>{
+          console.error(error);
+        })
+    },
     createLicense: async()=>{
-        const {addLicenseOwnerGmail, licenseType, licenseCreateAmmount, expirationDate} = get();
+        const {addLicenseOwnerGmail, licenseType, licenseCreateAmmount, expirationDate, refreshEvent} = get();
         const formattedExpirationDate = new Date(expirationDate).toISOString();
         const creationDate = new Date().toISOString();
         console.log(formattedExpirationDate);
@@ -31,17 +45,45 @@ export const useGlobalStore = create((set,get)=>({
                     expirationDate:"",
                     licenseCreateAmmount:1,
                 });
-                //TODO: refresh event call here
-            })
-            .catch(err=>{
+                refreshEvent();
+            }).catch(err=>{
                 console.log(err);
             })
         }
     },
-    loginEvent: async()=>{},
-    logoutEvent: async()=>{},
-    refreshEvent: async()=>{},
-    filterEvent: async()=>{},
+    loginEvent: async()=>{
+        const {loginName, loginPassword} = get();
+        await axios.post('/API/login', {username:loginName,password:loginPassword})
+        .then(result =>{
+            set({respondResult: result.data})
+            console.log("result is:", result.data);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    },
+
+    refreshEvent: async()=>{
+        console.log("refreshing");
+        await axios.get('/API/license/list')
+        .then (response =>{
+            set({licenseList: response.data})
+          }).catch(error => {
+            console.error(error);
+          });
+    },
+    setFilterLicense:async (selected)=>{
+        set({filter: selected});
+        const {filter,refreshEvent} = get();
+        if(filter==""){
+            await refreshEvent();
+        } else{
+            await axios.get('/API/license/searchWhat/'+filter)
+            .then(response=>{
+                set({licenseList: response.data});
+            });
+        }
+    },
     createAdminEvent: async()=>{},
 
     incrementAddLicense:()=>{
@@ -66,4 +108,38 @@ export const useGlobalStore = create((set,get)=>({
     setLicenseType:(licenseT)=>{
         set({licenseType: licenseT});
     },
+
+    createAdminRouteButton: ()=>{
+        navigate("/AdminPage");
+
+    },
+    setLoginName:(name)=>{
+        set({loginName: name});
+
+    },
+    setLoginPassword:(password)=>{
+        set({loginPassword: password});
+
+    },
+
+    setFindLicense: (value)=>{
+        set({findLicense:value});
+    },
+    findLicenseEvent: async()=>{
+        const {findLicense, refreshEvent} = get();
+        if(findLicense ==""){
+            await refreshEvent();
+            console.log("empty");
+        } else {
+            try{
+                console.log("fetching-license-event");
+                const response = await axios.get('/API/license/searchWho/'+findLicense);
+                set({licenseList: response.data});
+                console.log(response.data);
+            }catch(error){
+                console.log("error");
+                await refreshEvent();
+            }
+        }
+    }
 }))

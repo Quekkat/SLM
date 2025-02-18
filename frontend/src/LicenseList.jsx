@@ -1,7 +1,9 @@
 import React from 'react';
+import {useGlobalStore} from "./globalVariables";
 
-const LicenseList = ({licenseList, handleDelete}) => {
+const LicenseList = () => {
     //bla bla bla
+    const{licenseList, deleteLicense}=useGlobalStore();
   return (
     <div>
       {licenseList.map((license, index)=>{
@@ -22,7 +24,7 @@ const LicenseList = ({licenseList, handleDelete}) => {
             <p> Expiration date: {formattedExpirationDate}</p>
           </div>
           <div>
-            <button onClick ={()=>handleDelete(license._id)}>Delete</button>
+            <button onClick ={()=>deleteLicense(license._id)}>Delete</button>
           </div>
         </div>
         );

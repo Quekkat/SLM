@@ -19,11 +19,12 @@ const LicenseListModel = new mongoose.model("licenseListModel", licenseListSchem
 /*--------------------------------HANDLES REQUEST---------------------------------------------------------------------- */
 // Handles base request, delete once done
 
-//app.use(express.static('dist'));
+app.use(express.static('dist')); //frontend
 
 //handles login request
 app.post('/API/login',async (req, res) =>{
   const{username, password}=req.body;
+  console.log(req.body);
   //checks for users and if it exist
   LoginModel.findOne({username: username})
   .then(user =>{
@@ -85,36 +86,44 @@ app.post('/API/create/license', async (req, res)=>{
   }
 
 })
+
 //Allows to search license
 app.get('/API/license/searchWho/:username', async (req,res)=>{
   const username = req.params.username;
   if(!username){
     return res.status(400).json({ error: 'Username is required' });
   }
-  await LicenseListModel.find({userGmail: username}).sort({dateExpired:1}).then((result)=>{
-    if(!result){
-      return res.status(200).json("hello");
-    }
+  await LicenseListModel.find({userGmail: {$regex: username, $options: 'i'}}).sort({dateExpired:1}).then((result)=>{
+    if(!result.length){
+      return res.status(400).json({message: "doesnt exist"});
+    } 
     res.status(200).json(result);
   }).catch(error =>{
+    res.status(400).json({message: "doesnt exist"});
     console.error(error);
   })})
+
 
 //Allows to search based on license type
 app.get('/API/license/searchWhat/:type', async (req,res)=>{
   const type = req.params.type;
   if(!type){
-    return res.status(400).json({ error: 'huh' });
+    await LicenseListModel.find({}).sort({dateExpired:1}).then((documents)=>{
+      res.status(200).json(documents);
+    }).catch((error)=>{
+      console.error(error);
+    })
+  } else{    
+    await LicenseListModel.find({licenseType: type}).sort({dateExpired:1}).then((result)=>{
+      if(!result){
+        return res.status(200).json("no license found");
+      }else{
+        res.status(200).json(result);
+      }
+    }).catch(error =>{
+      console.error(error);
+    })
   }
-  await LicenseListModel.find({licenseType: type}).sort({dateExpired:1}).then((result)=>{
-    if(!result){
-      return res.status(200).json("hello");
-    }else{
-      res.status(200).json(result);
-    }
-  }).catch(error =>{
-    console.error(error);
-  })
 
 })
 app.listen(process.env.PORT); //Listens to port

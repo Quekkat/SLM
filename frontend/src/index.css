@@ -138,20 +138,24 @@ p.inputLabel{
 .baseBody{
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
+  flex-direction: column;
   margin: 0px;
   max-height: 100vh;
+  max-width: 100vw;
 }
 .statsHead{
   display: flex;
   flex-direction: column;
   align-items:stretch;
+  flex-grow: 1;
   margin: 0px;
-  height: 100vh;
+  height: 95vh;
   background-color: rgb(20, 20, 20);
   padding-right: 20px;
   padding-left: 20px;
   padding-top: 0px;
+  overflow: auto; 
 }
 .graphContainer{
   width: 50vw;
@@ -160,6 +164,7 @@ p.inputLabel{
   display: flex;
   justify-content: space-between;  
   margin-top: 10px;
+  max-height: 45vh;
 }
 
 .addLicenseContentContainer{
@@ -176,6 +181,8 @@ p.inputLabel{
 }
 .addLicenseInput{
   text-align: left;
+  flex-grow: 1;
+  width: 50%;
 }
 .tabContainer{
   display: flex;
@@ -185,13 +192,16 @@ p.inputLabel{
 .createLicense{
   display: flex;
   flex-direction: column;
+  flex-grow: 0.15;
   background-color: rgb(54, 54, 54);
   padding: 5px;
   padding-top: 20px;
   border-radius: 10px;
+  overflow: auto;
 }
 .addLicenseInputDiv{
   padding: 5px;
+  display: flex;
 }
 .createButton{
   border-radius: 8px;
@@ -243,6 +253,7 @@ p.inputLabel{
 }
 .license-list-body{
   height: 100vh;
+  flex-grow: 1;
 }
 .license-list-list-body{
   height: 93vh;
@@ -255,5 +266,26 @@ p.inputLabel{
   padding: 0px;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+.navigation-bar{
+  margin: 0px;
+  background-color: #1f1c1c;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100vw;
+}
+.main-page-body{
+  display: flex;
+  justify-content:space-evenly;
+  overflow: hidden;  
+}
+.tab-div-container{
+  display: flex;
+  align-items: center;
+}
+.license-ammount-container{
+  display: flex;
   align-items: center;
 }

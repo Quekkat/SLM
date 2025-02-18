@@ -1,35 +1,13 @@
 import React, {useState} from "react";
-import axios from "axios";
-import { useNavigate } from 'react-router-dom';
 import {useGlobalStore} from "./globalVariables";
 
 
 const AddLicense = () =>{
-    const navigate = useNavigate();
     const {licenseCreateAmmount, incrementAddLicense, decrementAddLicense, addLicenseOwnerGmail, expirationDate, licenseType, setAddLicenseGmail,setExpirationDate, createLicense,setLicenseType} = useGlobalStore();
 
 
     const addLicenseEvent= (e)=>{
         e.preventDefault();
-        /*const formattedExpirationDate = new Date(expirationDate).toISOString();
-        const creationDate = new Date().toISOString();
-        console.log(formattedExpirationDate);
-        console.log(creationDate);
-        if(!licenseType){
-            setMessage("select license type");
-        }else{
-            await axios.post('/API/create/license',{gmail, licenseType, creationDate, formattedExpirationDate })
-            .then(result =>{
-                console.log("license created");
-                setGmail('');
-                setLicenseType('');
-                setExpirationDate('');
-                retrieveLicense();
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-        }*/
         createLicense();
     }
 
@@ -44,11 +22,11 @@ const AddLicense = () =>{
                     </div>
                     <div className="addLicenseInputDiv">
                         <p className="inputLabel"> Expiration date: </p>
-                        <input type = "date" value={expirationDate} onChange={e=>{setExpirationDate(e.target.value)}} required/>
+                        <input className="addLicenseInput" type = "date" value={expirationDate} onChange={e=>{setExpirationDate(e.target.value)}} required/>
                     </div>
                     <div className="addLicenseInputDiv">
                         <p className="inputLabel"> License type:</p>
-                        <select value = {licenseType} onChange={e=>{setLicenseType(e.target.value)}}>
+                        <select className="addLicenseInput" value = {licenseType} onChange={e=>{setLicenseType(e.target.value)}}>
                             <option value="">--select--</option>
                             <option value="HOUDINI">HOUDINI</option>
                             <option value="NUKE">NUKE</option>
@@ -65,14 +43,14 @@ const AddLicense = () =>{
                         </select>
                     </div>
                     <div className="addLiceseInputDiv">
-                        <p className="inputLabel"> License ammount:</p>
-                        <div className= "licenseAmmountContainer">
+                        <div className= "license-ammount-container">
+                            <p className="inputLabel"> License ammount:</p>
                             <button type="button" onClick={incrementAddLicense}> + </button>
                             <p> {licenseCreateAmmount}</p>
                             <button type="button" onClick={decrementAddLicense}> - </button>
+                            <button type="submit">CREATE</button>
                         </div>
                     </div>
-                    <button className="createButton" type="submit">CREATE</button>
                 </div>
             </form>
         </div>
