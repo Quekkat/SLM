@@ -1,18 +1,20 @@
 // src/components/MainPage.jsx
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import LicenseList from './LicenseList';
-import Tab  from './Tab';
+//import Tab  from './Tab';
 import DisplayChart from './DisplayChart';
 import LicenseStatus from './LicenseStatus';
 import AddLicense from './AddLicense';
 import Navbar from './Navbar';
 import {useGlobalStore} from "./globalVariables";
 const MainPage = () => {
-  const{licenseList, refreshEvent} = useGlobalStore();
+  const{/*licenseList,*/ refreshEvent} = useGlobalStore();
   //Fetches the license list on first run
+  const licenseList = useGlobalStore(state => state.licenseList);
   useEffect(() =>{
+    console.log("main page use effect");
     refreshEvent();
   }, []);
 
@@ -33,7 +35,6 @@ const MainPage = () => {
       setLicenseList(response.data);
     })
   }
-
   return (
 
     <div>
@@ -54,7 +55,8 @@ const MainPage = () => {
             </div>
             <div className = "license-list-body">
               <div className="license-list-list-body">
-                { licenseList && <LicenseList/>}
+              {licenseList && <LicenseList/>}
+
               </div>
             </div>
         </div>

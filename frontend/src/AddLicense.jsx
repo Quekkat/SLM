@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {useGlobalStore} from "./globalVariables";
 
 
@@ -6,9 +6,9 @@ const AddLicense = () =>{
     const {licenseCreateAmmount, incrementAddLicense, decrementAddLicense, addLicenseOwnerGmail, expirationDate, licenseType, setAddLicenseGmail,setExpirationDate, createLicense,setLicenseType} = useGlobalStore();
 
 
-    const addLicenseEvent= (e)=>{
+    const addLicenseEvent= async (e)=>{
         e.preventDefault();
-        createLicense();
+        await createLicense();
     }
 
     return(

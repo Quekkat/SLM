@@ -1,10 +1,17 @@
 // Import required modules
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+import path from "path";
+import dotenv from "dotenv";
+import express from "express";
+import mongoose from "mongoose";
+//const mongoose = require('mongoose');
+
+dotenv.config();
+import { fileURLToPath } from 'url';
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 //Express init
 const app = express();
-
 // Use middleware to parse JSON and handle CORS (allow requests from React frontend)
 app.use(express.json());                          //Parse data to JSON so I dont have to every request
 /*--------------------------------MONGODB------------------------------------------------------------------------------ */
@@ -17,9 +24,16 @@ const licenseListSchema = new mongoose.Schema({userGmail: String, dateCreated: D
 const LicenseListModel = new mongoose.model("licenseListModel", licenseListSchema, "licenseCollection" );
 
 /*--------------------------------HANDLES REQUEST---------------------------------------------------------------------- */
-// Handles base request, delete once done
+// 
+//if (process.env.NODE_ENV==="production"){
+  console.log("production mode");
+  const frontendPath = path.join(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(frontendPath));
+  //app.get("*",(req,res)=>{res.sendFile(path.join(frontendPath, 'index.html'));});
+  //for reasons, this chokes the routes
+//}
 
-app.use(express.static('dist')); //frontend
+//app.use(express.static('dist')); //frontend
 
 //handles login request
 app.post('/API/login',async (req, res) =>{
@@ -44,12 +58,14 @@ app.post('/API/login',async (req, res) =>{
 });
 
 //Gets license list
-app.get('/API/license/list', (req,res)=>{
-  LicenseListModel.find({}).sort({dateExpired:1}).then((documents)=>{
-    res.json(documents);
-  }).catch((error)=>{
+app.get('/API/license/list', async(req,res)=>{
+  try{
+    const data = await LicenseListModel.find({}).sort({dateExpired:1});
+    console.log("responding");
+    res.status(200).json(data);
+  } catch (error){
     console.error(error);
-  })
+  }
 });
 
 //Deletes license

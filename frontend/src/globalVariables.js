@@ -24,7 +24,7 @@ export const useGlobalStore = create((set,get)=>({
           console.log(response.data);
         })
         .catch((error)=>{
-          console.error(error);
+          //console.error(error);
         })
     },
     createLicense: async()=>{
@@ -56,7 +56,7 @@ export const useGlobalStore = create((set,get)=>({
         await axios.post('/API/login', {username:loginName,password:loginPassword})
         .then(result =>{
             set({respondResult: result.data})
-            console.log("result is:", result.data);
+            console.log("Loginge: result is:", result.data);
         })
         .catch(err=>{
             console.log(err);
@@ -64,13 +64,18 @@ export const useGlobalStore = create((set,get)=>({
     },
 
     refreshEvent: async()=>{
-        console.log("refreshing");
-        await axios.get('/API/license/list')
-        .then (response =>{
-            set({licenseList: response.data})
-          }).catch(error => {
-            console.error(error);
-          });
+        console.log("refresh global event");
+        try{
+            await axios.get('/API/license/list')
+            .then (response =>{
+                set({licenseList: response.data});
+                console.log("refresh global event: changing licenselist to res.data");
+              }).catch(error => {
+                //console.error(error);
+              });
+        }catch(error){
+            console.log("refresh global event error");
+        }
     },
     setFilterLicense:async (selected)=>{
         set({filter: selected});

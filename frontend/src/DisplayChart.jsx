@@ -8,14 +8,19 @@ const DisplayChart = ({listeningList}) => {
     const [displayState, setDisplayState] = useState([]);
     var graphData =[];
     const today = new Date();
-    const findExpiredLicense=(licenseList, type, isoDate) =>{
-      const filteredLicense =licenseList.filter((license)=> license.licenseType === type && license.dateExpired>= isoDate);
-      return filteredLicense.length;
+
+    const findExpiredLicense=(licenseList = [], type, isoDate) =>{
+      const filteredLicense = licenseList.filter(
+        (license) => license.licenseType === type && license.dateExpired >= isoDate
+      ).length;
+      console.log("the ammount of", type, " license is: ", filteredLicense);
+      return filteredLicense;
 
     }
 
     //when the license is retrieved
-    const refreshGraph = (licenseList)=>{
+    const refreshGraph = (licenseList =[])=>{
+        console.log("updating graph");
         graphData.length =0;
         //This function loops into the upcoming 12 month to see how many license isnt expired each
         for (let i = 0; i < 12; i++) {
@@ -48,13 +53,19 @@ const DisplayChart = ({listeningList}) => {
     }
 
     const retrieveLicense = async () => {
-        await axios.get('/API/license/list').then (response =>{
-          refreshGraph(response.data);
-        }).catch(error => {
-          console.error(error);
-        });
+      console.log("display chart retrieving license")
+      try{
+        const response = await axios.get('/API/license/list');
+        console.log("display chart retrieve license result response data:");
+        console.log(response.data);
+        refreshGraph(response.data);
+      }catch(error){
+        console.error(error);
+        console.log("Display chart retrieve license failed");
       }
+    }
     useEffect(() =>{
+        console.log("Display chart use effect");
         retrieveLicense();
 
       }, [listeningList]);

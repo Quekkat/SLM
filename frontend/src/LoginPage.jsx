@@ -6,10 +6,10 @@ function LoginPage(){
     const navigate = useNavigate();
     const signInEvent = async (e) => {
         e.preventDefault();
+        console.log("loginpage sign in event");
        await loginEvent()
-       console.log("done");
        const result = useGlobalStore.getState().respondResult;
-       console.log("the result is" ,result)
+       console.log("sign in event: the result is" ,result)
         if(result=="success"){
             navigate("/mainPage");
         }

@@ -6,7 +6,7 @@ const LicenseList = () => {
     const{licenseList, deleteLicense}=useGlobalStore();
   return (
     <div>
-      {licenseList.map((license, index)=>{
+      {licenseList.map((license)=>{
         //Formats created date
         const formattedExpirationDate = new Date(license.dateExpired).toLocaleDateString("en-GB",{
           day: "2-digit", month: "long", year: "numeric"
